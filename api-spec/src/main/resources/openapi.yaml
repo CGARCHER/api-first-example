@@ -1,0 +1,230 @@
+openapi: 3.0.1
+info:
+  title: Cat API
+  description: API to manage cats and their chips
+  version: 1.0.0
+  termsOfService: http://example.com/terms/
+  contact:
+    name: Lorenzo Von Matterhorn
+    url: https://github.com/CGARCHER
+    email: support@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: https://api.example.com/v1
+    description: Main Server
+tags:
+  - name: Cats
+    description: Operations related to cats
+paths:
+  /api/cats:
+    get:
+      summary: Get all cats
+      description: Returns a list of all cats in the database.
+      operationId: getAllCats
+      tags:
+        - Cats
+      responses:
+        '200':
+          description: List of cats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cat'
+        '409':
+          description: Conflict - Chip already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      summary: Create a new cat
+      description: Creates a new cat record in the database.
+      operationId: createCat
+      tags:
+        - Cats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCatDTO'
+      responses:
+        '201':
+          description: Cat created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cat'
+        '409':
+          description: Conflict - Chip already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/cats/{id}/chip:
+    post:
+      summary: Add chip to a cat
+      description: Associates a chip with an existing cat by its ID.
+      operationId: addChipToCat
+      tags:
+        - Cats
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the cat to which the chip will be added
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Chip'
+      responses:
+        '200':
+          description: Chip added to cat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cat'
+        '409':
+          description: Conflict - Chip already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Update chip contact details
+      description: Updates the contact details of the chip associated with a cat by its ID.
+      operationId: updateChipContactDetails
+      tags:
+        - Cats
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the cat whose chip will be updated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateChipContactDetails'
+      responses:
+        '200':
+          description: Chip contact details updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chip'
+        '404':
+          description: Not Found - Cat does not have a chip
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    Cat:
+      type: object
+      required:
+        - id
+        - name
+        - birthDate
+        - breed
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: "Whiskers"
+        birthDate:
+          type: string
+          format: date
+          example: "2019-04-23"
+        breed:
+          $ref: '#/components/schemas/Breed'
+        chip:
+          $ref: '#/components/schemas/Chip'
+    Breed:
+      type: string
+      enum:
+        - SIAMESE
+        - PERSIAN
+        - MAINE_COON
+        - SPHYNX
+        - EUROPEAN_SHORTHAIR
+      example: "EUROPEAN_SHORTHAIR"
+    Chip:
+      type: object
+      required:
+        - serialNumber
+        - ownerName
+        - ownerPhone
+        - ownerEmail
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 101
+        serialNumber:
+          type: string
+          minLength: 15
+          maxLength: 15
+          example: "123456789012345"
+        ownerName:
+          type: string
+          example: "Juan Ferrer"
+        ownerPhone:
+          type: string
+          example: "+34600123456"
+        ownerEmail:
+          type: string
+          example: "juan.ferrer@example.com"
+    UpdateChipContactDetails:
+      type: object
+      properties:
+        ownerName:
+          type: string
+          example: "Juan Ferrer"
+        ownerPhone:
+          type: string
+          example: "+34600123456"
+        ownerEmail:
+          type: string
+          example: "juan.ferrer@example.com"
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Conflict - Chip already exists"
+        message:
+          type: string
+          example: "A chip with the given serial number already exists."
+    CreateCatDTO:
+      type: object
+      required:
+        - name
+        - birthDate
+        - breed
+      properties:
+        name:
+          type: string
+          example: "Whiskers"
+          minLength: 1
+        birthDate:
+          type: string
+          format: date
+          example: "2019-04-23"
+        breed:
+          $ref: '#/components/schemas/Breed'
