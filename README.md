@@ -91,6 +91,35 @@ Para ello se debe agregar una definición similar a la siguiente en el ___pom.xm
         </plugins>
     </build>
 ```
+**Usar un cliente generadoro en otro proyecto **
+Añadir la dependencia generada y definir el fichero de configuración para inicializar los objetos correspondientes.
+
+```xml
+<dependency>
+    <groupId>org.example.api</groupId>
+    <artifactId>api-spec</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+</dependency>
+```
+
+```java
+@Configuration
+public class ApiClientConfig {
+
+    @Bean
+    public ApiClient apiClient() {
+        ApiClient apiClient = new ApiClient();
+        //Mover la URL al properties mejor!!!
+        apiClient.setBasePath("http://localhost:8080/"); // URL base de la API
+        return apiClient;
+    }
+
+    @Bean
+    public ArtisanControllerApi artisanControllerApi(ApiClient apiClient) {
+        return new ArtisanControllerApi(apiClient);
+    }
+}
+```
 
 
 
