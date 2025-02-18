@@ -25,6 +25,7 @@
 
     <modules>
         <module>api-spec</module>
+        <module>api-client</module>
         <module>api-impl</module>
     </modules>
 
