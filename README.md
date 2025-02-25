@@ -97,7 +97,7 @@ Añadir la dependencia generada y definir el fichero de configuración para inic
 ```xml
 <dependency>
     <groupId>org.example.api</groupId>
-    <artifactId>api-spec</artifactId>
+    <artifactId>api-client</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 </dependency>
 ```
