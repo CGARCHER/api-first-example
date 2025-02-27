@@ -91,7 +91,7 @@ Para ello se debe agregar una definición similar a la siguiente en el ___pom.xm
         </plugins>
     </build>
 ```
-**Usar un cliente generadoro en otro proyecto**
+**Usar un cliente generado en otro proyecto**
 Añadir la dependencia generada y definir el fichero de configuración para inicializar los objetos correspondientes.
 
 ```xml
